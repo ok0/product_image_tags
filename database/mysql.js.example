@@ -1,0 +1,17 @@
+var _dbc = require("../common/db/con")("___PUT_DATABASE_NAME___");
+var _con = _dbc.init();
+var _mysql = {};
+_con.query("SET NAMES utf8", null);
+
+_mysql.selectExample = function(callback) {
+	qr = "SELECT * FROM test LIMIT 1";
+	_con.query(qr, function(queryErr, queryResult) {
+		if( queryErr ) {
+			callback(queryErr, null);
+		} else {
+			callback(null, queryResult);
+		}
+	});
+}
+
+module.exports = _mysql;

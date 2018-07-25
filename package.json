@@ -1,0 +1,35 @@
+{
+  "name": "product_image_tags",
+  "version": "1.0.0",
+  "description": "product_image_tags",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ok0/mustit_product_image_tags.git"
+  },
+  "author": "Jonghun Yoon",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ok0/mustit_product_image_tags/issues"
+  },
+  "homepage": "https://github.com/ok0/mustit_product_image_tags#readme",
+  "dependencies": {
+    "async": "^2.6.1",
+    "body-parser": "^1.18.3",
+    "ejs": "^2.6.1",
+    "express": "^4.16.3",
+    "iconv": "^2.3.0",
+    "iconv-lite": "^0.4.23",
+    "jquery": "^3.3.1",
+    "jschardet": "^1.6.0",
+    "jsdom": "^11.11.0",
+    "mysql": "^2.15.0",
+    "request": "^2.87.0",
+    "underscore": "^1.9.1",
+    "urlencode": "^1.1.0",
+    "utf8": "^3.0.0"
+  }
+}

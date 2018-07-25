@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta http-equiv="Content-Script-Type" content="text/javascript">
+	<meta http-equiv="Content-Style-Type" content="text/css">
+	<meta name="viewport" content="width=1080">
+	<title>javascript Pagination example</title>
+	<script type="text/javascript" src="pagination.js"></script>
+	</head>
+	<body>
+		<div id="pArea"></div>
+		<script type="text/javascript">
+			function blar(totalCount, perPage, currentCount) {
+				var pConfig = {
+					"outerElement" : "div"
+					, "outerElementClass" : "outerClass"
+					
+					, "parentElement" : "ul"
+					, "parentElementClass" : "parentClass"
+					
+					, "buttonElement" : "li"
+					, "buttonClass" : "buttonClass"
+					
+					, "prevButtonElement" : "li"
+					, "prevButtonClass" : "prevButtonClass"
+					, "prevButtonText" : "&lt;"
+					
+					, "nextButtonElement" : "li"
+					, "nextButtonClass" : "nextButtonClass"
+					, "nextButtonText" : "&gt;"
+
+					, "firstButtonElement" : "li"
+					, "firstButtonClass" : "firstButtonClass"
+					, "firstButtonText" : "&lt;&lt;"
+					
+					, "lastButtonElement" : "li"
+					, "lastButtonClass" : "lastButtonClass"
+					, "lastButtonText" : "&gt;&gt;"
+					
+					, "currentButtonClass" : "currentButtonClass"
+					
+					, "perPage" : perPage // object count per page.
+					, "totalCount" : totalCount // counting number of object.
+					, "currentCount" : currentCount // ( pgae 1 = 0, page 2 = perPage * 1, page 3 = perPage * 2)
+					, "pageBlockSize" : 10 // button length. Enter an even number.
+				};
+				var p = new Pagination();
+				
+				// param 2 : this is function name that will be called.
+				p.init(pConfig, "blar");
+				
+				document.getElementById("pArea").innerHTML = p.get();
+			}
+			
+			blar(3000, 30, 2910);
+		</script>
+	</body>
+</html>

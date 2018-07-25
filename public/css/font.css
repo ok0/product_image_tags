@@ -1,0 +1,32 @@
+@charset "utf-8";
+
+@font-face {
+	font-family: 'Nanum Gothic';
+	font-style: normal;
+	font-weight: 400;
+	src: url(http://cdn.mustit.co.kr/lib/css/common/font-ass/NanumGothic/NanumGothic-Regular.eot);
+	src: url(http://cdn.mustit.co.kr/lib/css/common/font-ass/NanumGothic/NanumGothic-Regular.eot?#iefix) format('embedded-opentype'),
+		url(http://cdn.mustit.co.kr/lib/css/common/font-ass/NanumGothic/NanumGothic-Regular.woff2) format('woff2'),
+		url(http://cdn.mustit.co.kr/lib/css/common/font-ass/NanumGothic/NanumGothic-Regular.woff) format('woff'),
+		url(http://cdn.mustit.co.kr/lib/css/common/font-ass/NanumGothic/NanumGothic-Regular.ttf) format('truetype');
+}
+@font-face {
+	font-family: 'Nanum Gothic';
+	font-style: normal;
+	font-weight: 700;
+	src: url(http://cdn.mustit.co.kr/lib/css/common/font-ass/NanumGothic/NanumGothic-Bold.eot);
+	src: url(http://cdn.mustit.co.kr/lib/css/common/font-ass/NanumGothic/NanumGothic-Bold.eot?#iefix) format('embedded-opentype'),
+		url(http://cdn.mustit.co.kr/lib/css/common/font-ass/NanumGothic/NanumGothic-Bold.woff2) format('woff2'),
+		url(http://cdn.mustit.co.kr/lib/css/common/font-ass/NanumGothic/NanumGothic-Bold.woff) format('woff'),
+		url(http://cdn.mustit.co.kr/lib/css/common/font-ass/NanumGothic/NanumGothic-Bold.ttf) format('truetype');
+}
+@font-face {
+	font-family: 'Nanum Gothic';
+	font-style: normal;
+	font-weight: 800;
+	src: url(http://cdn.mustit.co.kr/lib/css/common/font-ass/NanumGothic/NanumGothic-ExtraBold.eot);
+	src: url(http://cdn.mustit.co.kr/lib/css/common/font-ass/NanumGothic/NanumGothic-ExtraBold.eot?#iefix) format('embedded-opentype'),
+		url(http://cdn.mustit.co.kr/lib/css/common/font-ass/NanumGothic/NanumGothic-ExtraBold.woff2) format('woff2'),
+		url(http://cdn.mustit.co.kr/lib/css/common/font-ass/NanumGothic/NanumGothic-ExtraBold.woff) format('woff'),
+		url(http://cdn.mustit.co.kr/lib/css/common/font-ass/NanumGothic/NanumGothic-ExtraBold.ttf) format('truetype');
+}

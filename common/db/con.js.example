@@ -1,0 +1,30 @@
+var mysql = require("mysql");
+
+module.exports = function (dbType) {
+	var config = require("../db/info").info.___DATABASE_NAME___;
+	
+	return {
+		init : function () {
+			if( config ) {
+				return mysql.createConnection({
+					host: config.host
+					, port: config.port
+					, user: config.user
+					, password: config.password
+					, database: config.database
+				});
+			} else {
+				return false;
+			}
+		}
+		, connectTest : function (con) {
+			con.connect(function (err) {
+				if( err ) {
+					console.error("Database connect error!\n" + err);
+				} else {
+					console.error("Database is connected!\n");
+				}
+			});
+		}
+	}
+};
