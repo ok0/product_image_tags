@@ -346,6 +346,8 @@ _router.get("/search/list", function( req, res, next ) {
 							, category0 : inform.category0
 							, category1 : inform.category1
 							, category2 : inform.category2
+							, error : inform.error
+							, errorMsg : inform.errorMsg
 						};
 					} else {
 						parseData.hits.hits[idx]._source.mustit = null;
