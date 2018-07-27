@@ -150,7 +150,7 @@ var exception = 'OFF'; // 예외적인 상황에서 ON으로 변경하여 사용
 var filter = new Object(); // 사용자가 선택한 전체 속성을 담는 곳
 var filters = new Object(); // 상세속성 담는 곳
 var brand_arr = new Array(); // 선택한 브랜드 담는 곳
-var filter_arr = undefined; // 상세속성 각 항목 별로 배열을 선언해 값을 넣는다.
+var filter_arr = null; // 상세속성 각 항목 별로 배열을 선언해 값을 넣는다.
 
 // 선택한 속성을 객체(filter)에 넣는다.
 var colorCount = 0;
@@ -160,23 +160,22 @@ function filter_process(fThis, depth) {
 	
 	if(f_key == 'header' || f_key == 'category0' || f_key == 'category1') {
 		filter[f_key] = f_value;
+		
 	} else if (f_key == 'color') {
-		filter_arr = new Array();
 		var findColor = color.pickColorM(f_value);
 		
-		for(var i=0; i<findColor.length; i++) {
-			filter_arr.push(findColor[i]);
-		}
-		filters[f_key] = filter_arr;
+		filters[f_key] = findColor;
 		filter['filters'] = filters;
+		
 	} else if (f_key == 'brand') {
 		brand_arr.push(f_value);
 		filter[f_key] = brand_arr;
+		
 	} else {
 		filter_arr = new Array();
+		
 		filter_arr.push(f_value);
 		filters[f_key] = filter_arr;
-		
 		filter['filters'] = filters;
 	}
 	
@@ -199,6 +198,7 @@ function remove_filter(fThis, depth) {
 		}
 	} else {
 		delete filters[f_key];
+		//console.log(filters);
 		if(Object.keys(filters).length > 0) {
 			filter['filters'] = filters;	
 		} else {
@@ -229,22 +229,10 @@ function remove_filter(fThis, depth) {
 	view_category(depth);
 }
 
-// 선택을 취소한 색상의 유무를 파악하여 결과를 return 한다.
-function check_cancel_color(pColor, mColor) {
-	var check_list = color.pickColorM(mColor);
-	//console.log(mColor);
-	for (var i=0; i<check_list.length; i++) {
-		if(pColor == check_list[i]) {
-			return true;
-		}
-	}
-	return false;
-}
 
 // 선택된 속성들을 정리하여 데이터를 요청한다(하위 카테고리 또는 상세속성)
 function view_category(depth) {
-	var re_data = new Object();
-
+	
 	if (depth == 'M') {
 		$("#poc_attr").hide();
 		$("#category_S").hide();
@@ -252,36 +240,39 @@ function view_category(depth) {
 		$(".txt_total").find("strong").text("0");
 		$(".no_result").show();
 		$("#resultProduct").html('');
+		var length_num = Object.keys(filter).length;
 		
-		for (var i=0; i<Object.keys(filter).length; i++) {
-			if (Object.keys(filter)[i].indexOf('header') != -1) {
-				var obj_key = Object.keys(filter)[i];
-				re_data[obj_key] = filter[obj_key];
+		for (var i=0; i<length_num; i++) {
+			if (Object.keys(filter)[i] != 'header') {
+				filter[Object.keys(filter)[i]] = undefined;
+				filters = {};
+				brand_arr = [];
 			}
 		}
-		filter = re_data;
+		
 	} else if (depth == 'S') {
 		$("#poc_attr").hide();
-		
-		for (var i=0; i<Object.keys(filter).length; i++) {
-			if (Object.keys(filter)[i].indexOf('header') != -1 || Object.keys(filter)[i].indexOf('category0') != -1 || Object.keys(filter)[i].indexOf('brand') != -1) {
-				if (exception != "ON" && Object.keys(filter)[i].indexOf('brand') != -1) {
+		var length_num = Object.keys(filter).length;
+		for (var i=0; i<length_num; i++) {
+			if (Object.keys(filter)[i] != 'header' && Object.keys(filter)[i] != 'category0') {
+				if (exception == "ON" && Object.keys(filter)[i] == 'brand') {
 					continue;
 				}
-				var obj_key = Object.keys(filter)[i];
-				re_data[obj_key] = filter[obj_key];
+				filter[Object.keys(filter)[i]] = undefined;
+				filters = {};
+				brand_arr = [];
 			}
 		}
-		filter = re_data;
 		view_detail_attr(filter, 'on', '');	
+		
 	} else if (depth == 'dt') {
-		for (var i=0; i<Object.keys(filter).length; i++) {
-			if (Object.keys(filter)[i].indexOf('header') != -1 || Object.keys(filter)[i].indexOf('category0') != -1 || Object.keys(filter)[i].indexOf('category1') != -1 || Object.keys(filter)[i].indexOf('brand') != -1) {
-				var obj_key = Object.keys(filter)[i];
-				re_data[obj_key] = filter[obj_key];
+		var length_num = Object.keys(filter).length;		
+		for (var i=0; i<length_num; i++) {
+			if (Object.keys(filter)[i] == 'filters') {
+				filter[Object.keys(filter)[i]] = undefined;
+				filters = {};
 			}
 		}
-		filter = re_data;
 		view_detail_attr(filter,'on' , '');
 		$(".color_detail").removeClass('on');
 	} else {
@@ -289,7 +280,7 @@ function view_category(depth) {
 		return false;
 	}
 
-	console.log(filter);
+	//console.log(filter);
 	$.ajax ({
 		type : 'GET',
 		url : '/es/search/aggrs',
@@ -423,7 +414,7 @@ function view_detail_attr(data, pag_switch, config) {
 	
 	if(config == '') {
 		curCount = 0;
-		perPage = 40;
+		perPage = 80;
 	} else {
 		curCount = config['currentCount'];
 		perPage = config['perPage'];
@@ -452,38 +443,45 @@ function view_detail_attr(data, pag_switch, config) {
 			if (result.length == 0) {
 				$(".no_result").show();
 			} else {
+				var info_table = new InfoTable();
+				
 				var product_html = '';
 				for (var product_key=0; product_key<result.length; product_key++) {
-					pColor = result[product_key]._source.search.color.name;
-					mColor = color.pickColorP(pColor);
-					
-					product_html += '<li>';
-					product_html += '<div class="box_product">';
-					product_html += '<span class="product_image d_b" data-color-mustit="'+mColor+'" data-color-pantone="'+pColor+'">';
-					product_html += '<img src="http://cdn.mustit.co.kr/lib/upload/product/'+result[product_key]._source.extra.imgURL+'/_dims_/resize/500x500/extent/500x500" alt="상품이미지" />';
-					product_html += '<span class="product_mask" onClick=window.open(\'http://mustit.co.kr/product/product_detail/'+result[product_key]._id+'\');>';
-					product_html += '<span class="d_b">상품번호 : '+result[product_key]._id+'</span>';
-					product_html += '<span class="d_b">브랜드 : '+getBrand.pickBrand(result[product_key]._source.search.brand).eng+'</span>';
-					//product_html += '<span class="d_b">카테고리 : '+result[product_key]._source.search.headerCategory+'</span>';
-					product_html += '<span class="d_b">카테고리 : '+result[product_key]._source.search.headerCategory+' / '+result[product_key]._source.search.categoryName+' / '+result[product_key]._source.search.product.name+'</span>';
-					product_html += '<span class="d_b">색상 : '+mColor+' ('+pColor+')</span>';
-					product_html += '<span class="d_b">속성 : ';
+					var img_url = result[product_key]._source.extra.imgURL;
+					var pd_num = result[product_key]._id;
+					var pd_brand = getBrand.pickBrand(result[product_key]._source.search.brand).eng;
+					var oCategory = result[product_key]._source.search.headerCategory+' / '+result[product_key]._source.search.categoryName+' / '+result[product_key]._source.search.product.name;
+					var pd_color = color.pickColorP(result[product_key]._source.search.color.name)+ ' ('+result[product_key]._source.search.color.name+')';
+					var pd_name = '';
+					if(product_key,result[product_key]._source.mustit.error == 'product') {
+						pd_name = result[product_key]._source.mustit.errorMsg;
+					} else {
+						pd_name = result[product_key]._source.mustit.name;
+					}
+					var mCategory = '';
+					if(product_key,result[product_key]._source.mustit.error == 'category') {
+						mCategory = result[product_key]._source.mustit.errorMsg;
+					} else {
+						if(result[product_key]._source.mustit.headerCategory) {
+							mCategory += result[product_key]._source.mustit.headerCategory+' / ';	
+						}
+						mCategory += result[product_key]._source.mustit.category0+' / '+result[product_key]._source.mustit.category1+' / '+result[product_key]._source.mustit.category2;	
+					}
+					var pd_attr = 	'';
 					if( result[product_key]._source.search.shape.length ) {
-						product_html += result[product_key]._source.search.shape.length.name + '/';
+						pd_attr += result[product_key]._source.search.shape.length.name + '/';
 					}
 					if( result[product_key]._source.search.shape.sleeveLength ) {
-						product_html += result[product_key]._source.search.shape.sleeveLength.name + '/';
+						pd_attr += result[product_key]._source.search.shape.sleeveLength.name + '/';
 					}
-					product_html += 	result[product_key]._source.search.material.name + '/';
-					product_html += 	result[product_key]._source.search.print.name + '/';
-					product_html += 	result[product_key]._source.search.detail.name + '/';
-					product_html += 	result[product_key]._source.search.look.style.name;
-					product_html += '</span>';
-					product_html += '</span>';
-					product_html += '</span>';
-					product_html += '</div>';
-					product_html += '</li>';
-					//console.log(result[product_key]);
+					pd_attr += 	result[product_key]._source.search.material.name + '/';
+					pd_attr += 	result[product_key]._source.search.print.name + '/';
+					pd_attr += 	result[product_key]._source.search.detail.name + '/';
+					pd_attr += 	result[product_key]._source.search.look.style.name;	
+					
+					//console.log(product_key,result[product_key]._source.mustit.error);
+					
+					product_html = info_table.print(img_url, pd_name, pd_num, pd_brand, oCategory, mCategory, pd_color, pd_attr);
 				}
 				$(".no_result").hide();
 				$("#resultProduct").append(product_html);
@@ -501,17 +499,28 @@ function view_detail_attr(data, pag_switch, config) {
 	});
 }
 
-// 컬러리스트 출력
-function view_color_list(data) {
-	var colorList = color.convert(data);
-	//console.log(colorList);
-	var html = '';
-	for (var i=0; i<colorList.length; i++) {
-		html += '<li>';
-		html += '<span class="color_detail" data-key="filters\[color\]\['+i+'\]" data-value="'+Object.keys(colorList)[i]+'" onclick="choice_color(this, \'overlap\');"></span>';
-		html += '</li>';
+var InfoTable = function() {
+	var html = '';	
+	this.print = function(imgUrl, name, number, brand, oCate, mCate, color, attribute) {
+		
+		html += '<li><div class="box_product">';
+		html += '<a href="http://mustit.co.kr/product/product_detail/'+number+'" target="_blank" class="d_b">';
+		html += '<span class="product_image d_b">';
+		html += '<img src="http://cdn.mustit.co.kr/lib/upload/product/'+imgUrl+'/_dims_/resize/250x250/extent/250x250" alt="상품이미지" />';
+		html += '<span class="product_mask">';
+		html += '<span class="d_table"><span class="d_cell att_title">상품번호</span><span class="d_cell">'+number+'</span></span>';
+		html += '<span class="d_table"><span class="d_cell att_title">브랜드</span><span class="d_cell">'+brand+'</span></span>';
+		html += '<span class="d_table"><span class="d_cell att_title">카테고리(Omnious)</span><span class="d_cell">'+oCate+'</span></span>';
+		html += '<span class="d_table"><span class="d_cell att_title">카테고리(Mustit)</span><span class="d_cell">'+mCate+'</span></span>';
+		html += '<span class="d_table"><span class="d_cell att_title">색상</span><span class="d_cell">'+color+'</span></span>';
+		html += '<span class="d_table"><span class="d_cell att_title">속성</span><span class="d_cell">'+attribute+'</span></span>';
+		html += '</span></span>';
+		html += '<span class="product_txt d_b"><span class="txt_name ellipsis2 d_b">'+name+'</span></span>';
+		html += '</a>';
+		html += '</div></li>';
+		
+		return html;
 	}
-	$("#color").find("td .choice_list").append(html);
 }
 
 // function import_hidden(data) {
