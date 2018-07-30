@@ -95,7 +95,7 @@ _router.post("/condition", function( req, res, next ) {
 										if( err ) {
 											doneCallback("3 : " + err + data);
 										} else {
-											_mysql.putTaggingLog(p["number"], function(logErr, logRes) {
+											_mysql.putTaggingLog(p["number"], "", function(logErr, logRes) {
 												if( logErr ) {
 													doneCallback(logErr);
 												} else {
@@ -106,18 +106,13 @@ _router.post("/condition", function( req, res, next ) {
 									});
 								});
 							} else {
-								if( tags.code != "IMAGE_DIMENSIONS_TOO_SMALL" ) {
-									console.log(tags.code);
-									doneCallback("2 : erro - getTag" + statusCode + " " + err);
-								} else {
-									_mysql.putTaggingLog(p["number"], function(logErr, logRes) {
-										if( logErr ) {
-											doneCallback(logErr);
-										} else {
-											doneCallback(null);
-										}
-									});
-								}
+								_mysql.putTaggingLog(p["number"], tags.code, function(logErr, logRes) {
+									if( logErr ) {
+										doneCallback(logErr);
+									} else {
+										doneCallback(null);
+									}
+								});
 							}
 						});
 					}, 1000);

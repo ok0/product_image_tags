@@ -5,7 +5,6 @@ var data = '';
 
 _router.get('/', function(req, res) {
 	var qs = req.query;
-	console.log(qs);
 	
 	var first_number;
 	if(qs != '') {
