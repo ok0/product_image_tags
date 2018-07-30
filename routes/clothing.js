@@ -66,6 +66,7 @@ _router.post("/condition", function( req, res, next ) {
 			_async.eachOfSeries( result,
 				function(p, idx, doneCallback) {
 					lastIdx = idx;
+					console.log(lastIdx);
 					setTimeout(function() {
 						var productInfo = {
 							"number" : p["number"]
@@ -88,9 +89,7 @@ _router.post("/condition", function( req, res, next ) {
 						}
 						
 						_omniusCall.getTag(_imageBasePath + productInfo["imgURL"], contexts, options, function(err, statusCode, tags) {
-							if( err ) {
-								doneCallback("2 : erro - getTag" + statusCode + " " + err);
-							} else {
+							if( !err ) {
 								_omniusCall.setArray(productInfo, tags.data[0], function(refinedTags){
 									_omniusCall.putToElasticSearch(productInfo, refinedTags, function(err, statusCode, data) {
 										if( err ) {
@@ -106,26 +105,46 @@ _router.post("/condition", function( req, res, next ) {
 										}
 									});
 								});
+							} else {
+								if( tags.code != "IMAGE_DIMENSIONS_TOO_SMALL" ) {
+									console.log(tags.code);
+									doneCallback("2 : erro - getTag" + statusCode + " " + err);
+								} else {
+									_mysql.putTaggingLog(p["number"], function(logErr, logRes) {
+										if( logErr ) {
+											doneCallback(logErr);
+										} else {
+											doneCallback(null);
+										}
+									});
+								}
 							}
 						});
-					}, 100);
+					}, 1000);
 				}
 				, function (err) {
 					if( err ) {
+						/*
 						res.status(500).json({
 							"lastIdx" : lastIdx
 							, "msg" : err
 						});
+						*/
 						console.log("_async : " + err);
 					} else {
+						/*
 						res.status(200).json({
 							"lastIdx" : lastIdx
 							, "msg" : null
 						});
+						*/
 						console.log("_async : success");
 					}
 				}
 			);
+			
+			// 일단 response 보내자.
+			res.status(200).send();
 		}
 	});
 });

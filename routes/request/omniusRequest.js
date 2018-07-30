@@ -50,7 +50,7 @@ module.exports = function( /* taggerType */ ) {
 					
 					OPTIONS.body = JSON.stringify(bodyArray);
 					_request.post(OPTIONS, function (err, res, result) {
-						errorHandler(res.statusCode, callback, result);
+						errorHandler(res, callback, result);
 					});
 				} else {
 					errorHandler(null, callback, null);
@@ -177,17 +177,17 @@ module.exports = function( /* taggerType */ ) {
 				
 				//console.log(OPTIONS);
 				_request.post(OPTIONS, function (err, res, result) {
-					errorHandler(res.statusCode, callback, result);
+					errorHandler(res, callback, result);
 				});
 			}
 		};
 	}
 	
-	function errorHandler(statusCode, callback , data) {
-		if( statusCode === 200 || statusCode == 201 || statusCode == 202 || statusCode == 204 || statusCode == 205 ) {
-			callback(null, statusCode, JSON.parse(data));
+	function errorHandler(res, callback , data) {
+		if( res.statusCode === 200 || res.statusCode == 201 || res.statusCode == 202 || res.statusCode == 204 || res.statusCode == 205 ) {
+			callback(null, res.statusCode, JSON.parse(data));
 		} else {
-			callback("POST ERROR!", statusCode, JSON.parse(data));
+			callback("POST ERROR!", res.statusCode, JSON.parse(data));
 		}
 	}
 	
