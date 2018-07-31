@@ -27,17 +27,8 @@
 </script>
 
 <div id="demo_main" class="container">
-	<!-- 상세검색 -->
-	<form id="userAttr" action="/main" method="get">
-		<% for (var key in userdata) { %>
-		<input type="hidden" name="<%=key%>" value="<%=userdata[key]%>" />
-		<% } %>
-	</form>
-	
-	<div class="top_result">
-		<input type="hidden" id="dataSwitch" value="<%=first_num%>" />
+	<div class="top_result">		
 		<div class="choice_category">
-			
 			<table class="form-table horizontal">
 				<colgroup>
 					<col width="200" />
@@ -73,7 +64,6 @@
 							</ul>
 						</td>
 					</tr>
-					
 					<tr id="category_M" style="display:none;">
 						<th class="verti_t">카테고리 중</th>
 						<td colspan="3">
@@ -86,8 +76,6 @@
 							<ul class="productCategory after_clear choice_list"><!--cate_list--></ul>
 						</td>
 					</tr>
-					
-					
 				</tbody>
 				<tbody id="poc_attr" style="display:none;">
 					<!-- 옴니어스poc 속성 -->
@@ -101,41 +89,6 @@
 					<% } %>
 				</tbody>
 				
-				
-				<!-- <tr style="display:none;">
-					<th>배송정보</th>
-					<td>
-						<span class="d_ib">
-							<input type="radio" id="deliveryInCont" name="deliveryCont" class="form-check" />
-							<label for="deliveryInCont" class="ctm_check">국내배송</label>
-						</span>
-						
-						<span class="d_ib">
-							<input type="radio" id="deliveryOutCont" name="deliveryCont" class="form-check" />
-							<label for="deliveryOutCont" class="ctm_check">해외배송</label>
-						</span>
-					</td>
-					<th>상품상태</th>
-					<td>
-						<span class="d_ib">
-							<input type="radio" id="newProduct" name="stsProduct" class="form-check" />
-							<label for="newProduct" class="ctm_check">새제품</label>
-						</span>
-						
-						<span class="d_ib">
-							<input type="radio" id="usedProduct" name="stsProduct" class="form-check" />
-							<label for="usedProduct" class="ctm_check">중고제품</label>
-						</span>
-					</td>
-				</tr>
-				<tr style="display:none;">
-					<th>가격</th>
-					<td colspan="3">
-						<input type="text" class="form-text product_price" placeholder="최소가격"/>
-						<span>~</span>
-						<input type="text" class="form-text product_price" placeholder="최대가격"/>
-					</td>
-				</tr> -->
 				<tbody>	
 					<tr>
 						<td colspan="4" class="bg_gray">
@@ -154,52 +107,10 @@
 	<div class="result_search" style="padding-bottom:50px;">
 		<div class="search_top">
 			<span class="txt_total d_ib">전체상품 <strong>0</strong>개</span>
-			<!-- <span class="d_ib">
-				<input type="radio" id="rsUpdate" name="orderResult" class="form-check" />
-				<label for="rsUpdate" class="ctm_check">업데이트순</label>
-			</span>
-			<span class="d_ib">
-				<input type="radio" id="rsNew" name="orderResult" class="form-check" />
-				<label for="rsNew" class="ctm_check">최신등록순</label>
-			</span>
-			<span class="d_ib">
-				<input type="radio" id="rsLowPrice" name="orderResult" class="form-check" />
-				<label for="rsLowPrice" class="ctm_check">낮은가격순</label>
-			</span>
-			<span class="d_ib">
-				<input type="radio" id="rsHighPrice" name="orderResult" class="form-check" />
-				<label for="rsHighPrice" class="ctm_check">높은가격순</label>
-			</span> -->
 		</div>
 		
 		<div class="search_list">
-			<ul id="resultProduct" class="after_clear">
-				<!-- <% for (var i=0; i<0; i++) { %>
-				<li>
-					<div class="box_product">
-						<a href="" target="_blank" class="d_b">
-							<span class="product_image d_b">
-								<img src="public/img/img_no_view.gif" alt="상품이미지" />
-							</span>
-							
-							<span class="product_txt d_b">
-								<span class="txt_brand d_b">BRANDNAME</span>
-								<span class="txt_name ellipsis2 d_b">PRODUCTNAME</span>
-								<span class="txt_price d_b">
-									<strong>100,000</strong>원
-								</span>
-							</span>
-							
-							<span class="product_opt d_b after_clear">
-								<span class="txt_seller fl">jhyoo9161</span>
-								<span class="tag_benefit">무료배송</span>
-								<span class="tag_benefit">단골할인</span>
-							</span>
-						</a>
-					</div>
-				</li>
-				<% } %>-->
-			</ul> 
+			<ul id="resultProduct" class="after_clear"></ul> 
 		
 			<!-- 검색 전 or 결과값이 없을 때 -->
 			<div class="no_result">

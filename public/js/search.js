@@ -153,7 +153,6 @@ var brand_arr = new Array(); // 선택한 브랜드 담는 곳
 var filter_arr = null; // 상세속성 각 항목 별로 배열을 선언해 값을 넣는다.
 
 // 선택한 속성을 객체(filter)에 넣는다.
-var colorCount = 0;
 function filter_process(fThis, depth) {
 	var f_key = $(fThis).attr('data-key');
 	var f_value = $(fThis).attr('data-value');
@@ -307,10 +306,9 @@ function view_category(depth) {
 					var max_main_brand = 8;
 					
 					if (brand_list.length > max_main_brand) {
+						var import_html = new ImportHTML();
 						for (var b_key=max_main_brand; b_key<brand_list.length; b_key++) {
-							brand_html += '<li>';
-							brand_html += '<span class="choice_detail" data-key="brand" data-value="'+brand_list[b_key].key+'" onclick="choice_detail(this, \'overlap\');">'+getBrand.pickBrand(brand_list[b_key].key).eng+'</span>';
-							brand_html += '</li>';
+							brand_html = import_html.filter('brand', brand_list[b_key].key, 'overlap', getBrand.pickBrand(brand_list[b_key].key).eng, 'N');
 						}
 						$('#productBrand').find('.choice_list').append(brand_html);
 						$('#moreBrand').show();
@@ -321,13 +319,12 @@ function view_category(depth) {
 					}
 					
 					brand_html = '';
+					var import_html = new ImportHTML();
 					for (var b_key=0; b_key<max_main_brand; b_key++) {
-						brand_html += '<li>';
-						brand_html += '<span class="choice_detail" data-key="brand" data-value="'+brand_list[b_key].key+'" onclick="choice_detail(this, \'overlap\');">'+getBrand.pickBrand(brand_list[b_key].key).eng+'</span>';
-						brand_html += '</li>';
+						brand_html = import_html.filter('brand', brand_list[b_key].key, 'overlap', getBrand.pickBrand(brand_list[b_key].key).eng, 'N');
 					}
+				
 					$("#brand").show().find('#mainBrand').append(brand_html);
-					
 					if($('#productBrand').css("display") == "block") {
 						$('#moreBrand').click();
 					}
@@ -339,12 +336,11 @@ function view_category(depth) {
 				result = result.aggregations;
 			}
 			
+			var html = '';
 			
- 			var html = '';
- 			
 			if(depth != 'dt') {
+				var import_html = new ImportHTML();
 				for(var cate_key=0; cate_key<result.length; cate_key++) {
-					html += '<li>';
 					var next = null;
 					var cate_num = null;
 					if(depth == 'M') {
@@ -354,29 +350,23 @@ function view_category(depth) {
 						next = 'dt';
 						cate_num = 1;
 					}
-					html += '<span class="choice_detail cate_class" data-key="category'+cate_num+'" data-value="'+result[cate_key].key+'" onclick="choice_detail(this, \'' + next + '\');">'+result[cate_key].key+'</span>'
-					html += '</li>';
+					html = import_html.filter('category'+cate_num , result[cate_key].key, next, result[cate_key].key, 'Y');
 				}
 				$("#category_" + depth).show().find('.productCategory').append(html);	
 			} else {
 				next = 'overlap';
 				for (var name in result) { 
 					//console.log(name);
+					var import_html = new ImportHTML();
 					$("#"+name).show().find("td .choice_list").empty();
 					if ( name != 'color') {
 						for (var i=0; i<result[name].buckets.length; i++) {
-							html += '<li>';
-							html += '<span class="choice_detail" data-key="'+name+'" data-value="'+result[name].buckets[i].key+'" onclick="choice_detail(this, \'' + next + '\');">'+result[name].buckets[i].key+'</span>'
-							html += '</li>';
+							html = import_html.filter(name , result[name].buckets[i].key, next, result[name].buckets[i].key, 'N');
 						}
 					} else {
-						//console.log(result[name].buckets);
 						var colorList = color.convert(result[name].buckets);
 						for (var i=0; i<Object.keys(colorList).length; i++) {
-							//console.log(Object.keys(colorList)[i]);
-							html += '<li>';
-							html += '<span id="'+Object.keys(colorList)[i]+'" title="'+Object.keys(colorList)[i]+'" class="color_detail" data-key="color" data-value="'+Object.keys(colorList)[i]+'" onclick="choice_color(this, \'' + next + '\');"></span>';
-							html += '</li>';
+							html = import_html.color_filter('color', Object.keys(colorList)[i], 'overlap');
 						}
 					}
 					if(result[name].buckets.length == 0) {
@@ -416,8 +406,8 @@ function view_detail_attr(data, pag_switch, config) {
 		curCount = 0;
 		perPage = 80;
 	} else {
-		curCount = config['currentCount'];
-		perPage = config['perPage'];
+		curCount = config.currentCount;
+		perPage = config.perPage;
 	}
 	
 	new_data['size'] = perPage;
@@ -443,9 +433,8 @@ function view_detail_attr(data, pag_switch, config) {
 			if (result.length == 0) {
 				$(".no_result").show();
 			} else {
-				var info_table = new InfoTable();
-				
 				var product_html = '';
+				var import_html = new ImportHTML();
 				for (var product_key=0; product_key<result.length; product_key++) {
 					var img_url = result[product_key]._source.extra.imgURL;
 					var pd_num = result[product_key]._id;
@@ -479,9 +468,7 @@ function view_detail_attr(data, pag_switch, config) {
 					pd_attr += 	result[product_key]._source.search.detail.name + '/';
 					pd_attr += 	result[product_key]._source.search.look.style.name;	
 					
-					//console.log(product_key,result[product_key]._source.mustit.error);
-					
-					product_html = info_table.print(img_url, pd_name, pd_num, pd_brand, oCategory, mCategory, pd_color, pd_attr);
+					product_html = import_html.product(img_url, pd_name, pd_num, pd_brand, oCategory, mCategory, pd_color, pd_attr);
 				}
 				$(".no_result").hide();
 				$("#resultProduct").append(product_html);
@@ -499,10 +486,32 @@ function view_detail_attr(data, pag_switch, config) {
 	});
 }
 
-var InfoTable = function() {
-	var html = '';	
-	this.print = function(imgUrl, name, number, brand, oCate, mCate, color, attribute) {
+var ImportHTML = function() {
+	var html = '';
+	
+	this.filter = function(key, value, depth, name, isCate) {
+		var cateClass = '';
+		if (isCate == 'Y') {
+			cateClass = 'cate_class';
+		} else {
+			cateClass = '';
+		}
+		html += '<li>';
+		html += '<span class="choice_detail '+cateClass+'" data-key="'+key+'" data-value="'+value+'" onclick="choice_detail(this, \'' + depth + '\');">'+name+'</span>';
+		html += '</li>';
 		
+		return html;
+	}
+	
+	this.color_filter = function(key, value, depth) {
+		html += '<li>';
+		html += '<span id="'+value+'" title="'+value+'" class="color_detail" data-key="'+key+'" data-value="'+value+'" onclick="choice_color(this, \'' + depth+ '\');"></span>';
+		html += '</li>';
+		
+		return html;
+	}
+		
+	this.product = function(imgUrl, name, number, brand, oCate, mCate, color, attribute) {
 		html += '<li><div class="box_product">';
 		html += '<a href="http://mustit.co.kr/product/product_detail/'+number+'" target="_blank" class="d_b">';
 		html += '<span class="product_image d_b">';
@@ -522,14 +531,3 @@ var InfoTable = function() {
 		return html;
 	}
 }
-
-// function import_hidden(data) {
-	// var user_attr = '';
-	// for (var key in data) {
-		// user_attr += '<input type="hidden" name="'+key+'" value="'+data[key]+'" />';
-	// }
-	// $("#userAttr").html('');
-	// $("#userAttr").append(user_attr).submit();
-// 	
-	// //window.location.hash = $("#userAttr").serialize();
-// }
