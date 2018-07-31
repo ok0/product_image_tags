@@ -7,7 +7,7 @@ _router.get('/', function(req, res) {
 	// 옴니어스poc 속성
 	var omnious_arr = {
 		'length' : '길이',
-		'sleevLength' : '소매길이',
+		'sleeveLength' : '소매길이',
 		'material' : '소재',
 		'print' : '프린트',
 		'detail' : '디테일',

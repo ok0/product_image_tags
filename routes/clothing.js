@@ -115,7 +115,7 @@ _router.post("/condition", function( req, res, next ) {
 								});
 							}
 						});
-					}, 500);
+					}, 300);
 				}
 				, function (err) {
 					if( err ) {

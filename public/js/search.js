@@ -369,6 +369,7 @@ function view_category(depth) {
 							html = import_html.color_filter('color', Object.keys(colorList)[i], 'overlap');
 						}
 					}
+					//console.log(name + " : " + result[name].buckets.length);
 					if(result[name].buckets.length == 0) {
 						$("#"+name).hide();
 					}
