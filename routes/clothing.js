@@ -107,11 +107,24 @@ _router.post("/condition", function( req, res, next ) {
 								});
 							} else {
 								_mysql.putTaggingLog(p["number"], tags.code, function(logErr, logRes) {
+									if( tags.code == "INTERNAL_ERROR"
+										|| tags.code == "UNKNOWN_ERROR"
+										|| tags.code == "INVALID_API_KEY"
+										|| tags.code == "THROTTLED"
+										|| tags.code == "QUOTA_EXCEEDED"
+									) {
+										doneCallback(tags.code);
+									} else {
+										doneCallback(null);
+									}
+									
+									/*
 									if( logErr ) {
 										doneCallback(logErr);
 									} else {
 										doneCallback(null);
 									}
+									*/
 								});
 							}
 						});
