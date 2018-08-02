@@ -1,45 +1,3 @@
-/*
- * 
- * to 유지호
- * 
- * 상단 검색 조건 리스트 불러오기
- * REQUEST
- * METHOD : GET
- * URL : /es/search/aggrs
- * Content-Type : application/x-www-form-urlencoded
- * BODY :
- * {
- * 	"header" : "W", "M"	>> header만 보낼경우 category0의 리스트 return
- * , "category0" : ""	>> header && category0을 보낼경우 category1, brand return
- * , "category1" : ""	>> header && category0 && category1을 보낼경우 [length, sleevLength, material, print, detail, style] return
- * }
- * RESPONSE
- * application/json
- * 
- * 
- * 
- * 하단 검색 결과 리스트 불러오기
- * REQUEST
- * METHOD : GET
- * URL : /es/search/list
- * Content-Type : application/x-www-form-urlencoded
- * BODY :
- * {
- * 	"header" : 	"W", "M"	>> header만 보낼경우 category0의 리스트 return
- * , "category0" : []	>> (OR) header && category0을 보낼경우 category1, brand return
- * , "category1" : []	>> (OR) header && category0 && category1을 보낼경우 [length, sleevLength, material, print, detail, style] return
- * , "filters" : {		>> (OR) AND (OR) AND (OR)
- * 		"..." : []
- * 		, "..." : []
- * 		, "..." : []
- * 	}
- * }
- * RESPONSE
- * application/json
- * 
- * 
- * */
-
 /********** 화면 처리 js **********/
 var finalId = 0; //전체 속성리스트와 하단 선택 속성리스트 중 동일한 값을 매칭시키기 위한 id값 (삭제기능에 사용 됨)
 
@@ -421,6 +379,7 @@ function view_detail_attr(data, pag_switch, config) {
 		dataType : 'json',
 		data : new_data,
 		beforeSend : function() {
+			//$(".wrap-loading").removeClass("display-none");
 			$("#resultProduct").html('');
 		},
 		success : function(data) {
@@ -429,7 +388,7 @@ function view_detail_attr(data, pag_switch, config) {
 			var pd_total = result.hits.total;
 			result = result.hits.hits;
 			
-			$(".txt_total").find("strong").text(pd_total);
+			$(".txt_total").find("strong").text(commify(pd_total));
 			
 			if (result.length == 0) {
 				$(".no_result").show();
@@ -479,7 +438,12 @@ function view_detail_attr(data, pag_switch, config) {
 			if(pag_switch == 'on') {
 				$("#pArea").attr("data-switch", "1");
 				setPage(pd_total, perPage, curCount);
+			} else {
+				$(window).scrollTop($('.result_search').position().top);
 			}
+		},
+		complete : function() {
+			//$(".wrap-loading").addClass("display-none");
 		},
 		error : function(err) {
 			console.log(err);

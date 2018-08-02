@@ -136,3 +136,6 @@
 #pArea li:hover {font-weight:bold;}
 #pArea li.currentButtonClass {font-weight:bold;color:#222;}
 
+.wrap-loading { position: fixed; left:0; right:0; top:0; bottom:0; background: rgba(0,0,0,0.2); }
+.wrap-loading div{ position: fixed; top:40%; left:45%; margin-left: -21px; margin-top: -21px; }
+.display-none{ display:none; }

@@ -336,7 +336,7 @@ _router.get("/search/list", function( req, res, next ) {
 	//console.log( JSON.stringify(esQuery) );
 	_ES.search(esQuery, function (data) {
 		var parseData = JSON.parse(data);
-		if( parseData.status != "500" && parseData.hits.hits.length > 0 ) {
+		if( parseData.status != "500" ) {
 			_async.eachOf(parseData.hits.hits
 				,function(hit, idx, doneCallback) {
 					getProductInformation(hit._id, function(err, inform) {
@@ -359,7 +359,7 @@ _router.get("/search/list", function( req, res, next ) {
 				}
 				, function(err) {
 					if( err ) {
-						res.status(500).send("");
+						res.status(500).send(JSON.stringify({}));
 					} else {
 						res.status(200).json(JSON.stringify(parseData));
 					}
