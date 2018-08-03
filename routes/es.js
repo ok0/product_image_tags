@@ -56,7 +56,8 @@ var esCreateHeaderArr = function( header ) {
 	if( header == "M" ) {
 		return ["M", "W,M"];
 	} else if( header == "W" ) {
-		return ["W", "W,M"];
+		//return ["W", "W,M"];
+		return ["W"];
 	} else {
 		return false;
 	}
