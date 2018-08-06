@@ -1,3 +1,4 @@
+require("date-utils");
 var _express = require("express");
 var _router = _express.Router();
 var _async = require("async");
@@ -56,6 +57,7 @@ _router.post("/condition", function( req, res, next ) {
 		, "limit" : req.body.query.limit
 		, "headerCategory" : req.body.query.headerCategory
 		, "category" : req.body.query.category
+		, "order" : req.body.query.order
 	};
 	_mysql.selectProduct(condition, function(err, result) {
 		if( err ) {
@@ -66,8 +68,8 @@ _router.post("/condition", function( req, res, next ) {
 			_async.eachOfSeries( result,
 				function(p, idx, doneCallback) {
 					lastIdx = idx;
-					console.log(lastIdx);
-					setTimeout(function() {
+					console.log( new Date().toFormat("HH24:MI:SS") + " : " + result.length + " >> " + lastIdx);
+					//setTimeout(function() {
 						var productInfo = {
 							"number" : p["number"]
 							, "imgURL" : p["img1"]
@@ -128,7 +130,7 @@ _router.post("/condition", function( req, res, next ) {
 								});
 							}
 						});
-					}, 300);
+					//}, 0);
 				}
 				, function (err) {
 					if( err ) {
