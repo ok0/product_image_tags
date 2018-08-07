@@ -1,45 +1,3 @@
-/*
- * 
- * to 유지호
- * 
- * 상단 검색 조건 리스트 불러오기
- * REQUEST
- * METHOD : GET
- * URL : /es/search/aggrs
- * Content-Type : application/x-www-form-urlencoded
- * BODY :
- * {
- * 	"header" : "W", "M"	>> header만 보낼경우 category0의 리스트 return
- * , "category0" : ""	>> header && category0을 보낼경우 category1, brand return
- * , "category1" : ""	>> header && category0 && category1을 보낼경우 [length, sleevLength, material, print, detail, style] return
- * }
- * RESPONSE
- * application/json
- * 
- * 
- * 
- * 하단 검색 결과 리스트 불러오기
- * REQUEST
- * METHOD : GET
- * URL : /es/search/list
- * Content-Type : application/x-www-form-urlencoded
- * BODY :
- * {
- * 	"header" : 	"W", "M"	>> header만 보낼경우 category0의 리스트 return
- * , "category0" : []	>> (OR) header && category0을 보낼경우 category1, brand return
- * , "category1" : []	>> (OR) header && category0 && category1을 보낼경우 [length, sleevLength, material, print, detail, style] return
- * , "filters" : {		>> (OR) AND (OR) AND (OR)
- * 		"..." : []
- * 		, "..." : []
- * 		, "..." : []
- * 	}
- * }
- * RESPONSE
- * application/json
- * 
- * 
- * */
-
 /********** 화면 처리 js **********/
 var finalId = 0; //전체 속성리스트와 하단 선택 속성리스트 중 동일한 값을 매칭시키기 위한 id값 (삭제기능에 사용 됨)
 
@@ -369,6 +327,7 @@ function view_category(depth) {
 							html = import_html.color_filter('color', Object.keys(colorList)[i], 'overlap');
 						}
 					}
+					//console.log(name + " : " + result[name].buckets.length);
 					if(result[name].buckets.length == 0) {
 						$("#"+name).hide();
 					}
@@ -420,6 +379,7 @@ function view_detail_attr(data, pag_switch, config) {
 		dataType : 'json',
 		data : new_data,
 		beforeSend : function() {
+			//$(".wrap-loading").removeClass("display-none");
 			$("#resultProduct").html('');
 		},
 		success : function(data) {
@@ -428,7 +388,7 @@ function view_detail_attr(data, pag_switch, config) {
 			var pd_total = result.hits.total;
 			result = result.hits.hits;
 			
-			$(".txt_total").find("strong").text(pd_total);
+			$(".txt_total").find("strong").text(commify(pd_total));
 			
 			if (result.length == 0) {
 				$(".no_result").show();
@@ -436,6 +396,7 @@ function view_detail_attr(data, pag_switch, config) {
 				var product_html = '';
 				var import_html = new ImportHTML();
 				for (var product_key=0; product_key<result.length; product_key++) {
+					
 					var img_url = result[product_key]._source.extra.imgURL;
 					var pd_num = result[product_key]._id;
 					var pd_brand = getBrand.pickBrand(result[product_key]._source.search.brand).eng;
@@ -456,6 +417,7 @@ function view_detail_attr(data, pag_switch, config) {
 						}
 						mCategory += result[product_key]._source.mustit.category0+' / '+result[product_key]._source.mustit.category1+' / '+result[product_key]._source.mustit.category2;	
 					}
+					var mFilter = result[product_key]._source.mustit.filters.join(" / ");
 					var pd_attr = 	'';
 					if( result[product_key]._source.search.shape.length ) {
 						pd_attr += result[product_key]._source.search.shape.length.name + '/';
@@ -468,7 +430,7 @@ function view_detail_attr(data, pag_switch, config) {
 					pd_attr += 	result[product_key]._source.search.detail.name + '/';
 					pd_attr += 	result[product_key]._source.search.look.style.name;	
 					
-					product_html = import_html.product(img_url, pd_name, pd_num, pd_brand, oCategory, mCategory, pd_color, pd_attr);
+					product_html = import_html.product(img_url, pd_name, pd_num, pd_brand, oCategory, mCategory, mFilter, pd_color, pd_attr);
 				}
 				$(".no_result").hide();
 				$("#resultProduct").append(product_html);
@@ -478,7 +440,12 @@ function view_detail_attr(data, pag_switch, config) {
 			if(pag_switch == 'on') {
 				$("#pArea").attr("data-switch", "1");
 				setPage(pd_total, perPage, curCount);
+			} else {
+				$(window).scrollTop($('.result_search').position().top);
 			}
+		},
+		complete : function() {
+			//$(".wrap-loading").addClass("display-none");
 		},
 		error : function(err) {
 			console.log(err);
@@ -511,7 +478,7 @@ var ImportHTML = function() {
 		return html;
 	}
 		
-	this.product = function(imgUrl, name, number, brand, oCate, mCate, color, attribute) {
+	this.product = function(imgUrl, name, number, brand, oCate, mCate, mFilter, color, attribute) {
 		html += '<li><div class="box_product">';
 		html += '<a href="http://mustit.co.kr/product/product_detail/'+number+'" target="_blank" class="d_b">';
 		html += '<span class="product_image d_b">';
@@ -521,6 +488,7 @@ var ImportHTML = function() {
 		html += '<span class="d_table"><span class="d_cell att_title">브랜드</span><span class="d_cell">'+brand+'</span></span>';
 		html += '<span class="d_table"><span class="d_cell att_title">카테고리(Omnious)</span><span class="d_cell">'+oCate+'</span></span>';
 		html += '<span class="d_table"><span class="d_cell att_title">카테고리(Mustit)</span><span class="d_cell">'+mCate+'</span></span>';
+		html += '<span class="d_table"><span class="d_cell att_title">필터(Mustit)</span><span class="d_cell">'+mFilter+'</span></span>';
 		html += '<span class="d_table"><span class="d_cell att_title">색상</span><span class="d_cell">'+color+'</span></span>';
 		html += '<span class="d_table"><span class="d_cell att_title">속성</span><span class="d_cell">'+attribute+'</span></span>';
 		html += '</span></span>';

@@ -141,7 +141,7 @@
 					, "nextButtonElement" : "li"
 					, "nextButtonClass" : "nextButtonClass"
 					, "nextButtonText" : "&gt;"
-
+					
 					, "firstButtonElement" : "li"
 					, "firstButtonClass" : "firstButtonClass"
 					, "firstButtonText" : "&lt;&lt;"
@@ -160,7 +160,7 @@
 				
 				if($("#pArea").attr("data-switch") != 1) {
 					//console.log(filter);
-					view_detail_attr(filter, 'use', pConfig);	
+					view_detail_attr(filter, 'use', pConfig);
 				}
 				
 				var p = new Pagination();
@@ -169,11 +169,16 @@
 				document.getElementById("pArea").innerHTML = p.get();
 				
 				$("#pArea").attr("data-switch", "0");
+				//$("html, body").animate({scrollTop : $(".result_search").offset().top}, 0);
 			}
 			
 			//blar(30, 5, 0);
 		</script>
 	</div>
+</div>
+
+<div class="wrap-loading display-none">
+	<div><img src="public/img/loading.gif" width="250" /></div>
 </div>
 
 <% include ./__footer_v.ejs %>

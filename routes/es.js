@@ -21,7 +21,7 @@ var getSearchKey = function(search) {
 		return "product.name";
 	} else if( search == "length" ) {
 		return "shape.length.name";
-	} else if( search == "sleevLength" ) {
+	} else if( search == "sleeveLength" ) {
 		return "shape.sleeveLength.name";
 	} else if( search == "material" ) {
 		return "material.name";
@@ -56,7 +56,8 @@ var esCreateHeaderArr = function( header ) {
 	if( header == "M" ) {
 		return ["M", "W,M"];
 	} else if( header == "W" ) {
-		return ["W", "W,M"];
+		//return ["W", "W,M"];
+		return ["W"];
 	} else {
 		return false;
 	}
@@ -112,9 +113,9 @@ _router.get("/search/aggrs", function( req, res, next ) {
 					, "size" : 30
 				}
 			}
-			, "sleevLength" : {
+			, "sleeveLength" : {
 				"terms" : {
-					"field" : _searchProp+".shape.sleevLength.name"
+					"field" : _searchProp+".shape.sleeveLength.name"
 					, "size" : 30
 				}
 			}
@@ -336,34 +337,39 @@ _router.get("/search/list", function( req, res, next ) {
 	//console.log( JSON.stringify(esQuery) );
 	_ES.search(esQuery, function (data) {
 		var parseData = JSON.parse(data);
-		_async.eachOf(parseData.hits.hits
-			,function(hit, idx, doneCallback) {
-				getProductInformation(hit._id, function(err, inform) {
-					if( !err && inform !== null ) {
-						parseData["hits"]["hits"][idx]["_source"]["mustit"] = {
-							name : inform.name
-							, headerCategory : inform.headerCategory
-							, category0 : inform.category0
-							, category1 : inform.category1
-							, category2 : inform.category2
-							, error : inform.error
-							, errorMsg : inform.errorMsg
-						};
-					} else {
-						parseData.hits.hits[idx]._source.mustit = null;
-					}
-					
-					doneCallback(null);
-				});
-			}
-			, function(err) {
-				if( err ) {
-					res.status(500).send("");
-				} else {
-					res.status(200).json(JSON.stringify(parseData));
+		if( parseData.status != "500" ) {
+			_async.eachOf(parseData.hits.hits
+				,function(hit, idx, doneCallback) {
+					getProductInformation(hit._id, function(err, inform) {
+						if( !err && inform !== null ) {
+							parseData["hits"]["hits"][idx]["_source"]["mustit"] = {
+								name : inform.name
+								, headerCategory : inform.headerCategory
+								, category0 : inform.category0
+								, category1 : inform.category1
+								, category2 : inform.category2
+								, filters : inform.filters
+								, error : inform.error
+								, errorMsg : inform.errorMsg
+							};
+						} else {
+							parseData.hits.hits[idx]._source.mustit = null;
+						}
+						
+						doneCallback(null);
+					});
 				}
-			}
-		);
+				, function(err) {
+					if( err ) {
+						res.status(500).send(JSON.stringify({}));
+					} else {
+						res.status(200).json(JSON.stringify(parseData));
+					}
+				}
+			);
+		} else {
+			res.status(500).send(JSON.stringify({}));
+		}
 		
 		//res.status(200).send(data);
 		//res.status(200).json(data);
