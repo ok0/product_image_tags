@@ -99,7 +99,7 @@
 #demo_main .search_list li .box_product {box-shadow:1px 1px 10px rgba(0,0,0,0.1);}
 #demo_main .search_list li .box_product .product_image {cursor:pointer;padding-bottom:100%;position:relative;overflow:hidden;}
 #demo_main .search_list li .box_product .product_image img {position:absolute;top:0;left:0;width:100%;}
-#demo_main .search_list li .box_product .product_image .product_mask {opacity:0;text-align:center;position:absolute;top:0;left:0;right:0;bottom:0;background-color:rgba(0,0,0,0.7);padding:20px 10px;transition:all 0.4s ease-out;}
+#demo_main .search_list li .box_product .product_image .product_mask {opacity:0;text-align:center;position:absolute;top:0;left:0;right:0;bottom:0;background-color:rgba(0,0,0,0.7);padding:7px 10px;transition:all 0.4s ease-out;}
 #demo_main .search_list li .box_product .product_image:hover .product_mask {opacity: 1;}
 #demo_main .search_list li .box_product .product_image .product_mask span {color:#fff;}
 #demo_main .search_list li .box_product .product_image .product_mask .d_table:first-child {border-top:1px solid #e3e3e3;}

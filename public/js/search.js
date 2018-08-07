@@ -396,6 +396,7 @@ function view_detail_attr(data, pag_switch, config) {
 				var product_html = '';
 				var import_html = new ImportHTML();
 				for (var product_key=0; product_key<result.length; product_key++) {
+					
 					var img_url = result[product_key]._source.extra.imgURL;
 					var pd_num = result[product_key]._id;
 					var pd_brand = getBrand.pickBrand(result[product_key]._source.search.brand).eng;
@@ -416,6 +417,7 @@ function view_detail_attr(data, pag_switch, config) {
 						}
 						mCategory += result[product_key]._source.mustit.category0+' / '+result[product_key]._source.mustit.category1+' / '+result[product_key]._source.mustit.category2;	
 					}
+					var mFilter = result[product_key]._source.mustit.filters.join(" / ");
 					var pd_attr = 	'';
 					if( result[product_key]._source.search.shape.length ) {
 						pd_attr += result[product_key]._source.search.shape.length.name + '/';
@@ -428,7 +430,7 @@ function view_detail_attr(data, pag_switch, config) {
 					pd_attr += 	result[product_key]._source.search.detail.name + '/';
 					pd_attr += 	result[product_key]._source.search.look.style.name;	
 					
-					product_html = import_html.product(img_url, pd_name, pd_num, pd_brand, oCategory, mCategory, pd_color, pd_attr);
+					product_html = import_html.product(img_url, pd_name, pd_num, pd_brand, oCategory, mCategory, mFilter, pd_color, pd_attr);
 				}
 				$(".no_result").hide();
 				$("#resultProduct").append(product_html);
@@ -476,7 +478,7 @@ var ImportHTML = function() {
 		return html;
 	}
 		
-	this.product = function(imgUrl, name, number, brand, oCate, mCate, color, attribute) {
+	this.product = function(imgUrl, name, number, brand, oCate, mCate, mFilter, color, attribute) {
 		html += '<li><div class="box_product">';
 		html += '<a href="http://mustit.co.kr/product/product_detail/'+number+'" target="_blank" class="d_b">';
 		html += '<span class="product_image d_b">';
@@ -486,6 +488,7 @@ var ImportHTML = function() {
 		html += '<span class="d_table"><span class="d_cell att_title">브랜드</span><span class="d_cell">'+brand+'</span></span>';
 		html += '<span class="d_table"><span class="d_cell att_title">카테고리(Omnious)</span><span class="d_cell">'+oCate+'</span></span>';
 		html += '<span class="d_table"><span class="d_cell att_title">카테고리(Mustit)</span><span class="d_cell">'+mCate+'</span></span>';
+		html += '<span class="d_table"><span class="d_cell att_title">필터(Mustit)</span><span class="d_cell">'+mFilter+'</span></span>';
 		html += '<span class="d_table"><span class="d_cell att_title">색상</span><span class="d_cell">'+color+'</span></span>';
 		html += '<span class="d_table"><span class="d_cell att_title">속성</span><span class="d_cell">'+attribute+'</span></span>';
 		html += '</span></span>';

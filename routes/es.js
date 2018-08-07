@@ -348,6 +348,7 @@ _router.get("/search/list", function( req, res, next ) {
 								, category0 : inform.category0
 								, category1 : inform.category1
 								, category2 : inform.category2
+								, filters : inform.filters
 								, error : inform.error
 								, errorMsg : inform.errorMsg
 							};
