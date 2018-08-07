@@ -32,6 +32,7 @@ _app2.use(_bodyParser.urlencoded({extended: false}));
 _app2.use("/clothing", _taggerClothing);
 _app.use("/es", _es);
 _app.use("/main", _demoMain);
+_app.use("/", _demoMain);
 
 
 /* LISTEN */
