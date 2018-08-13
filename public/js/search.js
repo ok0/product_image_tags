@@ -266,7 +266,9 @@ function view_category(depth) {
 					if (brand_list.length > max_main_brand) {
 						var import_html = new ImportHTML();
 						for (var b_key=max_main_brand; b_key<brand_list.length; b_key++) {
-							brand_html = import_html.filter('brand', brand_list[b_key].key, 'overlap', getBrand.pickBrand(brand_list[b_key].key).eng, 'N');
+							if( brand_list[b_key].key != "0" ) {
+								brand_html = import_html.filter('brand', brand_list[b_key].key, 'overlap', getBrand.pickBrand(brand_list[b_key].key).eng, 'N');
+							}
 						}
 						$('#productBrand').find('.choice_list').append(brand_html);
 						$('#moreBrand').show();
@@ -279,7 +281,9 @@ function view_category(depth) {
 					brand_html = '';
 					var import_html = new ImportHTML();
 					for (var b_key=0; b_key<max_main_brand; b_key++) {
-						brand_html = import_html.filter('brand', brand_list[b_key].key, 'overlap', getBrand.pickBrand(brand_list[b_key].key).eng, 'N');
+						if( brand_list[b_key].key != "0" ) {
+							brand_html = import_html.filter('brand', brand_list[b_key].key, 'overlap', getBrand.pickBrand(brand_list[b_key].key).eng, 'N');
+						}
 					}
 				
 					$("#brand").show().find('#mainBrand').append(brand_html);
