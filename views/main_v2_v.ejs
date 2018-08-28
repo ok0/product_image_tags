@@ -1,0 +1,184 @@
+<% include ./__header_v2_v.ejs %>
+
+<script>
+	$(document).ready(function() {
+		// $("#moreCategory").click(function() {
+			// var target = $(this).attr("data-sts");
+// 			
+			// if(target == "0") {
+				// $(".productCategory").addClass("cate_list").css({height:"auto"});
+				// $(this).attr("data-sts","1").val("－");
+			// } else {
+				// $(".productCategory").removeClass("cate_list").css({height:"25px"});
+				// $(this).attr("data-sts","0").val("＋");
+			// }
+		// });
+		$("#moreBrand").click(function() {
+			var target = $(this).attr("data-sts");
+			if(target == "0") {
+				$("#productBrand").show();
+				$(this).attr("data-sts","1").val("－");
+			} else {
+				$("#productBrand").hide();
+				$(this).attr("data-sts","0").val("＋");
+			}
+		});
+	});
+</script>
+
+<div id="demo_main" class="container">
+	<div class="top_result">		
+		<div class="choice_category">
+			<table class="form-table horizontal">
+				<colgroup>
+					<col width="200" />
+					<col width="340" />
+					<col width="200" />
+					<col width="340" />
+				</colgroup>
+				<tbody>
+					<tr id="brand" style="display:none;">
+						<th class="verti_t">
+							브랜드
+							<input type="button" value="＋" data-sts="0" id="moreBrand" class="btn_transparent more" />
+						</th>
+						<td colspan="3">
+							<ul id="mainBrand" class="after_clear choice_list"></ul>
+							
+							<!-- 브랜드 더보기 -->
+							<div id="productBrand" class="more_brand" style="display:none;">
+								<ul class="after_clear choice_list"></ul>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<th class="verti_t">카테고리 분류</th>
+						<td colspan="3">
+							<ul class="productCategory after_clear choice_list cate_list"><!--cate_list-->
+								<li>
+									<span class="choice_detail cate_class" data-key="header" data-value="M" onclick="choice_detail(this, 'M');">남성</span><!--choice_detail(this);-->
+								</li>
+								<li>
+									<span class="choice_detail cate_class" data-key="header" data-value="W" onclick="choice_detail(this, 'M');">여성</span>
+								</li>
+							</ul>
+						</td>
+					</tr>
+					<tr id="category_M" style="display:none;">
+						<th class="verti_t">카테고리 중</th>
+						<td colspan="3">
+							<ul class="productCategory after_clear choice_list"><!--cate_list--></ul>
+						</td>
+					</tr>
+					<tr id="category_S" style="display:none;">
+						<th class="verti_t">카테고리 소</th>
+						<td colspan="3">
+							<ul class="productCategory after_clear choice_list"><!--cate_list--></ul>
+						</td>
+					</tr>
+				</tbody>
+				<tbody id="poc_attr" style="display:none;">
+					<!-- 옴니어스poc 속성 -->
+					<% for (var name in attr) { %>
+					<tr id="<%=name%>">
+						<th><%=attr[name]%></th>
+						<td colspan="3">
+							<ul class="after_clear choice_list"></ul>
+						</td>
+					</tr>
+					<% } %>
+				</tbody>
+				
+				<tbody>	
+					<tr>
+						<td colspan="4" class="bg_gray">
+							<div class="del_all fl">
+								<input type="button" value="전체삭제" class="btn_transparent c_gray9" onclick="window.location.reload();"/>
+							</div>
+							<ul id="searchFinal" class="after_clear choice_list fr"></ul>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+	
+	<!-- 검색결과 리스트 -->
+	<div class="result_search" style="padding-bottom:50px;">
+		<div class="search_top">
+			<span class="txt_total d_ib">전체상품 <strong>0</strong>개</span>
+		</div>
+		
+		<div class="search_list">
+			<ul id="resultProduct" class="after_clear"></ul> 
+		
+			<!-- 검색 전 or 결과값이 없을 때 -->
+			<div class="no_result">
+				<p>검색 결과가 없습니다.</p>
+			</div>
+		</div>
+	</div>
+	
+	<!-- 페이지네이션 -->
+	<div id="pagination">
+		<div id="pArea" data-switch="0"></div>
+		<script type="text/javascript">
+			function setPage(totalCount, perPage, currentCount) {
+				var pConfig = {
+					"outerElement" : "div"
+					, "outerElementClass" : "outerClass"
+					
+					, "parentElement" : "ul"
+					, "parentElementClass" : "parentClass"
+					
+					, "buttonElement" : "li"
+					, "buttonClass" : "buttonClass"
+					
+					, "prevButtonElement" : "li"
+					, "prevButtonClass" : "prevButtonClass"
+					, "prevButtonText" : "&lt;"
+					
+					, "nextButtonElement" : "li"
+					, "nextButtonClass" : "nextButtonClass"
+					, "nextButtonText" : "&gt;"
+					
+					, "firstButtonElement" : "li"
+					, "firstButtonClass" : "firstButtonClass"
+					, "firstButtonText" : "&lt;&lt;"
+					
+					, "lastButtonElement" : "li"
+					, "lastButtonClass" : "lastButtonClass"
+					, "lastButtonText" : "&gt;&gt;"
+					
+					, "currentButtonClass" : "currentButtonClass"
+					
+					, "perPage" : perPage // object count per page.
+					, "totalCount" : totalCount // counting number of object.
+					, "currentCount" : currentCount // ( pgae 1 = 0, page 2 = perPage * 1, page 3 = perPage * 2)
+					, "pageBlockSize" : 5 // button length.
+				};
+				
+				if($("#pArea").attr("data-switch") != 1) {
+					//console.log(filter);
+					view_detail_attr(filter, 'use', pConfig);
+				}
+				
+				var p = new Pagination();
+				// param 2 : this is function name that will be called.
+				p.init(pConfig, "setPage");
+				document.getElementById("pArea").innerHTML = p.get();
+				
+				$("#pArea").attr("data-switch", "0");
+				//$("html, body").animate({scrollTop : $(".result_search").offset().top}, 0);
+			}
+			
+			//blar(30, 5, 0);
+		</script>
+	</div>
+</div>
+
+<div class="wrap-loading display-none">
+	<div><img src="public/img/loading.gif" width="250" /></div>
+</div>
+
+<% include ./__footer_v.ejs %>

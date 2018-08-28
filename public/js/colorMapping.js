@@ -1,4 +1,4 @@
-var colorMatching = function() {
+var colorMapping = function() {
 	var getColorList = function(cbM, cbP) {
 		$.ajax ({
 			type : "GET"
@@ -106,7 +106,7 @@ var colorMatching = function() {
 	init();
 }
 
-var color = new colorMatching();
+var color = new colorMapping();
 // color.printColorList();
 // color.printColorList("M");
 // color.printColorList("P");
